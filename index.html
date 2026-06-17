@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RoastMyRishta — Roast Your Crush, Ex, or That Rishta Proposal 🎀</title>
+<meta name="description" content="Tell us about your crush, ex, or rishta proposal and get roasted by your funniest bestie. Free, savage, and made to be shared.">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="toast"></div>
+<div id="sticker-container"></div>
+
+<!-- ═══ HERO ═══ -->
+<section class="hero">
+  <div class="hero-badge"><span class="hero-badge-emoji">🎀</span>Free · Bestie-Approved · Zero Mercy</div>
+  <h1 class="hero-title">
+    Roast Your <span class="accent">Crush</span>,<br>
+    Ex, Or That <span class="accent">Rishta</span> 👀
+  </h1>
+  <p class="hero-subtitle">Tell us a little about them. Your roast bestie does the rest. Then send it to your group chat and watch the chaos unfold. 🎀</p>
+  <div class="hero-cta">
+    <a href="#create-roast" class="btn-main">🔥 Roast Someone Now</a>
+  </div>
+  <div class="hero-stats">
+    <div class="hstat"><div class="hstat-n" id="stat-roasts">0</div><div class="hstat-l">Roasts Served</div></div>
+    <div class="hstat-div"></div>
+    <div class="hstat"><div class="hstat-n" id="stat-threads">0</div><div class="hstat-l">Group Threads</div></div>
+    <div class="hstat-div"></div>
+    <div class="hstat"><div class="hstat-n" id="stat-gifts">0</div><div class="hstat-l">Gifts Won</div></div>
+  </div>
+</section>
+
+<!-- ═══ CREATE ROAST ═══ -->
+<section id="create-roast">
+  <div class="eyebrow">step one, bestie</div>
+  <h2 class="section-title">Who Are We <em>Roasting</em> Today?</h2>
+
+  <div class="cute-card">
+    <div class="field-group">
+      <div class="field-label">🎯 Pick a category</div>
+      <div class="chip-row" id="category-chips"></div>
+    </div>
+
+    <div class="field-group">
+      <div class="field-label">✍️ Tell us about them</div>
+      <textarea class="field-textarea" id="inp-description" placeholder="e.g. texts 'hey' once every 3 days, has a Rumi quote in bio, calls everyone 'bestie' but never replies first..."></textarea>
+    </div>
+
+    <div class="field-group">
+      <div class="field-label">🔥 Pick your roast intensity</div>
+      <div class="chip-row" id="intensity-chips"></div>
+    </div>
+
+    <button class="btn-yellow" onclick="generateRoast()">🎀 Roast Them Now</button>
+  </div>
+</section>
+
+<!-- ═══ ROAST RESULT ═══ -->
+<section id="roast-result">
+  <div class="roast-card">
+    <div class="roast-tag" id="roast-tag-label">cooked 💀</div>
+
+    <div class="roast-text" id="roast-text-output"></div>
+
+    <div class="roast-refresh" onclick="refreshRoast()">↺ Give me another one</div>
+
+    <div class="roast-meter">
+      <div class="rm-label" id="roast-meter-label">Savagery Level: 0%</div>
+      <div class="rm-track"><div class="rm-fill" id="roast-meter-fill"></div></div>
+    </div>
+
+    <!-- Bestie tip — teaches roasting skill subtly -->
+    <div class="bestie-tip">
+      <div class="bestie-tip-emoji">💡</div>
+      <div class="bestie-tip-text" id="bestie-tip-text"></div>
+    </div>
+
+    <!-- Horoscope -->
+    <div class="challenge-section" id="horoscope-box" style="text-align:center"></div>
+
+    <!-- THREAD / GROUP MECHANIC -->
+    <div class="thread-section">
+      <div class="thread-title">🎀 The Roast Thread</div>
+      <div id="thread-list"></div>
+      <div class="thread-add-box">
+        <div class="field-group" style="margin-bottom:10px">
+          <input type="text" class="field-input" id="inp-thread-name" placeholder="Your name (or stay anonymous bestie)">
+        </div>
+        <div class="field-group" style="margin-bottom:10px">
+          <textarea class="field-textarea" id="inp-thread-text" placeholder="Add your own roast to the thread..." style="min-height:60px"></textarea>
+        </div>
+        <button class="btn-secondary" style="width:100%; justify-content:center" onclick="addThreadRoast()">➕ Add To Thread</button>
+      </div>
+    </div>
+
+    <!-- CHALLENGE A FRIEND -->
+    <div class="challenge-section">
+      <div class="challenge-heading">Send This. Dare Your Group. 👀</div>
+      <div class="challenge-sub">This roast gets funnier with friends piling on. Send the link, challenge them to add their own roast, watch the thread explode.</div>
+      <div class="challenge-buttons">
+        <button class="small-action-btn btn-wa" onclick="shareWhatsApp()">💬 Send on WhatsApp</button>
+        <button class="small-action-btn btn-ig" onclick="shareInstagram()">📸 Share to Instagram</button>
+        <button class="small-action-btn btn-copy" onclick="copyChallengeLink()">🔗 Copy Link</button>
+      </div>
+    </div>
+
+    <!-- STREAK -->
+    <div class="streak-box">
+      <span class="streak-fire">🔥</span>
+      <span>You've roasted <span id="streak-count">0</span> people today. Bestie behavior.</span>
+    </div>
+
+    <!-- SAVAGE MODE UPSELL -->
+    <div class="premium-section">
+      <div class="premium-card">
+        <div class="premium-heading">Unlock Savage Mode 🔥</div>
+        <div class="premium-sub">The unfiltered, no-chill, premium roast experience. Way more chaotic. Way funnier. Way more screenshot-worthy.</div>
+        <div class="premium-price-tag">
+          <div class="premium-price-big">₹19</div>
+          <div class="premium-price-label">one-time · instant</div>
+        </div>
+        <a href="https://payments.cashfree.com/forms/savagemode" target="_blank" id="savage-pay-btn" class="btn-main" style="width:100%; justify-content:center" onclick="handleSavagePayClick()">
+          🔥 Unlock Savage Mode — ₹19
+        </a>
+      </div>
+    </div>
+
+    <!-- COPY / SHARE PLAIN TEXT -->
+    <div style="text-align:center; margin-top:16px">
+      <button class="btn-ghost" onclick="copyRoastText()">📋 Copy Roast Text</button>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ TOP 5 COUPLES ═══ -->
+<section style="max-width:620px; margin:0 auto; padding:0 20px 50px">
+  <div class="eyebrow">monthly hall of fame</div>
+  <h2 class="section-title">This Month's <em>Top 5 Roasted</em> 🏆</h2>
+  <div class="cute-card">
+    <div id="top5-list"></div>
+    <div style="text-align:center; margin-top:18px">
+      <button class="small-action-btn btn-ig" onclick="copyTop5SubmitCaption()">📸 Submit Your Roast For Next Month</button>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ LUCKY DRAW / INSTAGRAM ═══ -->
+<section style="max-width:620px; margin:0 auto; padding:0 20px 50px">
+  <div class="lucky-section">
+    <div class="lucky-badge"><div class="lucky-dot"></div>Lucky Draw · Every 10 Days · Real Gifts</div>
+    <div class="lucky-heading">Tag Us. Get Featured.<br>Win A <span style="color:var(--pink2)">Surprise Gift.</span> 🎁</div>
+    <div class="lucky-body">Post your roast card or thread on Instagram, tag @roastmyrishta, use #Top5Roasted. Every 10 days we pick a winner and send a real gift. Could be you bestie.</div>
+    <span class="lucky-handle">@roastmyrishta</span>
+    <div class="challenge-buttons">
+      <a href="https://www.instagram.com/roastmyrishta" target="_blank" class="small-action-btn btn-ig">📸 Follow @roastmyrishta</a>
+      <button class="small-action-btn btn-copy" onclick="copyTop5SubmitCaption()">📋 Copy Caption</button>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ STORIES MARQUEE ═══ -->
+<section class="stories-section">
+  <div class="eyebrow">real bestie confessions</div>
+  <h2 class="section-title">They Got <em>Roasted</em>.<br>They Loved It Anyway. 🎀</h2>
+  <div class="marquee-wrap"><div class="marquee-track" id="marquee-track"></div></div>
+</section>
+
+<!-- ═══ FAQ ═══ -->
+<section class="faq-section">
+  <div class="eyebrow">questions, bestie?</div>
+  <h2 class="section-title">You <em>Asked</em></h2>
+  <div id="faq-list"></div>
+</section>
+
+<!-- ═══ FOOTER ═══ -->
+<footer>
+  <div class="footer-brand">RoastMy<span>Rishta</span></div>
+  <div>Made with 🎀 for everyone who needed a good roast · © 2025</div>
+  <div style="margin-top:8px"><a href="https://instagram.com/roastmyrishta" target="_blank">@roastmyrishta on Instagram</a></div>
+</footer>
+
+<script src="data.js"></script>
+<script src="cert.js"></script>
+<script src="logic.js"></script>
+</body>
+</html>

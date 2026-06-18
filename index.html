@@ -80,6 +80,13 @@
     <!-- Horoscope -->
     <div class="challenge-section" id="horoscope-box" style="text-align:center"></div>
 
+    <!-- Card teaser — pulls eyes toward the paid Roast Card below -->
+    <div style="text-align:center; margin-top:18px; padding:16px; background:var(--lavender); border:2px dashed var(--dark); border-radius:var(--r-md)">
+      <div style="font-family:var(--ff-hand); font-size:18px; color:var(--pink2); margin-bottom:4px">psst bestie...</div>
+      <div style="font-family:var(--ff-display); font-weight:700; font-size:14px; color:var(--dark)">this roast deserves a cute card to go with it 🎀</div>
+      <div style="font-family:var(--ff-body); font-weight:600; font-size:12px; color:var(--dark2); opacity:0.7; margin-top:4px">scroll down to get yours ↓</div>
+    </div>
+
     <!-- THREAD / GROUP MECHANIC -->
     <div class="thread-section">
       <div class="thread-title">🎀 The Roast Thread</div>
@@ -112,18 +119,32 @@
       <span>You've roasted <span id="streak-count">0</span> people today. Bestie behavior.</span>
     </div>
 
-    <!-- SAVAGE MODE UPSELL -->
-    <div class="premium-section">
+    <!-- ROAST CARD UNLOCK — THE REAL PRODUCT -->
+    <div class="premium-section" id="cardSection">
       <div class="premium-card">
-        <div class="premium-heading">Unlock Savage Mode 🔥</div>
-        <div class="premium-sub">The unfiltered, no-chill, premium roast experience. Way more chaotic. Way funnier. Way more screenshot-worthy.</div>
+        <div class="premium-heading">Get Your Roast Card 🎀</div>
+        <div class="premium-sub">A gorgeous, shareable card with your roast, savagery score, and horoscope — all in one cute design. 8+ unique styles. This is the one you actually post.</div>
         <div class="premium-price-tag">
-          <div class="premium-price-big">₹19</div>
-          <div class="premium-price-label">one-time · instant</div>
+          <div class="premium-price-big">₹29</div>
+          <div class="premium-price-label">one-time · instant unlock</div>
         </div>
-        <a href="https://payments.cashfree.com/forms/savagemode" target="_blank" id="savage-pay-btn" class="btn-main" style="width:100%; justify-content:center" onclick="handleSavagePayClick()">
-          🔥 Unlock Savage Mode — ₹19
+        <a href="https://payments.cashfree.com/forms/roastcard" target="_blank" id="card-pay-btn" class="btn-main" style="width:100%; justify-content:center" onclick="handleCardPayClick()">
+          🎀 Unlock My Roast Card — ₹29
         </a>
+        <div style="font-family:var(--ff-body); font-weight:600; font-size:11px; color:var(--dark2); opacity:0.6; margin-top:10px">UPI · Card · NetBanking · Cashfree secure</div>
+      </div>
+    </div>
+
+    <!-- TIP JAR -->
+    <div class="premium-section">
+      <div class="cute-card" style="text-align:center; box-shadow:5px 5px 0 var(--dark)">
+        <div style="font-family:var(--ff-display); font-weight:700; font-size:17px; color:var(--dark); margin-bottom:6px">🧋 Liked the roast? Buy us a bubble tea</div>
+        <div style="font-family:var(--ff-body); font-weight:600; font-size:13px; color:var(--dark2); opacity:0.75; margin-bottom:16px">No pressure bestie — just pure vibes and gratitude if you want to.</div>
+        <div class="chip-row" style="justify-content:center">
+          <a href="https://payments.cashfree.com/forms/onebubbletea" target="_blank" class="chip" style="text-decoration:none">₹19 · one boba 🧋</a>
+          <a href="https://payments.cashfree.com/forms/twobubbletea" target="_blank" class="chip" style="text-decoration:none">₹49 · we're besties now 💗</a>
+          <a href="https://payments.cashfree.com/forms/bigbubbletea" target="_blank" class="chip" style="text-decoration:none">₹99 · cutie patootie 🎀</a>
+        </div>
       </div>
     </div>
 
@@ -133,6 +154,16 @@
     </div>
   </div>
 </section>
+
+<!-- ═══ ROAST CARD MODAL ═══ -->
+<div class="modal-overlay" id="cert-modal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeCertModal()">✕</button>
+    <div id="cert-modal-card"></div>
+    <div class="challenge-buttons" id="cert-modal-actions" style="margin-top:16px"></div>
+    <div style="font-family:var(--ff-body); font-weight:600; font-size:11px; color:var(--dark2); opacity:0.6; text-align:center; margin-top:12px">📸 SCREENSHOT · POST ON INSTAGRAM · TAG @ROASTMYRISHTA</div>
+  </div>
+</div>
 
 <!-- ═══ TOP 5 COUPLES ═══ -->
 <section style="max-width:620px; margin:0 auto; padding:0 20px 50px">

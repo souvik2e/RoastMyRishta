@@ -126,12 +126,6 @@ function initIntensityChips() {
   ).join('');
 }
 function selectIntensity(id) {
-  if (id === 'savage' && !STATE.savageUnlocked) {
-    showToast('🔥 Savage Mode is premium — unlock it below for ₹19!');
-    const premBtn = document.getElementById('savage-pay-btn');
-    if (premBtn) premBtn.scrollIntoView({ behavior:'smooth', block:'center' });
-    return;
-  }
   STATE.intensity = id;
   document.querySelectorAll('#intensity-chips .chip').forEach(el => {
     el.classList.toggle('selected', el.dataset.lvl === id);
@@ -270,34 +264,73 @@ function addThreadRoast() {
 }
 
 /* ══════════════════════════════════════════
-   SAVAGE MODE — PAYMENT GATE (₹19)
-   Same real-verification pattern as BreakupBudget:
-   Cashfree Return URL → ?unlock=savage19
-   No honor-system "did you pay" popup.
+   ROAST CARD UNLOCK — THE REAL PRODUCT (₹29)
+   Real-verification pattern, no honor system:
+   Cashfree Return URL → ?unlock=card29
+   Card is IMPOSSIBLE to see without real payment.
 ══════════════════════════════════════════ */
-function handleSavagePayClick() {
+function handleCardPayClick() {
   sessionStorage.setItem('rr_pending', '1');
   sessionStorage.setItem('rr_state', JSON.stringify({
     inputText: STATE.inputText,
     category:  STATE.category,
+    roastText: STATE.roastText,
+    meter:     STATE.meter,
   }));
   /* No popup — Cashfree's Return URL is the only way back in */
 }
 
-function checkSavageUnlock() {
+function checkCardUnlock() {
   const params = new URLSearchParams(window.location.search);
-  if (params.get('unlock') === 'savage19') {
-    STATE.savageUnlocked = true;
+  if (params.get('unlock') === 'card29') {
+    const saved = sessionStorage.getItem('rr_state');
+    if (saved) {
+      const d = JSON.parse(saved);
+      Object.assign(STATE, d);
+    }
+    STATE.cardUnlocked = true;
     sessionStorage.removeItem('rr_pending');
     sessionStorage.removeItem('rr_state');
 
-    showToast('🔥 Savage Mode unlocked! Selecting it for you now...', 4000);
-    selectIntensity('savage');
+    showToast('🎀 Payment confirmed! Your Roast Card is ready below!', 4000);
+
+    const resultEl = document.getElementById('roast-result');
+    if (resultEl && STATE.roastText) {
+      resultEl.style.display = 'block';
+      _renderRoastResult();
+      setTimeout(() => {
+        openRoastCardModal();
+        document.getElementById('cardSection')?.scrollIntoView({ behavior:'smooth', block:'start' });
+      }, 600);
+    }
 
     const cleanUrl = window.location.origin + window.location.pathname;
     window.history.replaceState({}, document.title, cleanUrl);
   }
 }
+
+/* HARD GATE — card impossible to build without payment */
+function openRoastCardModal() {
+  if (!STATE.cardUnlocked) {
+    showToast('Unlock your Roast Card for ₹29 first 🔒');
+    const payBtn = document.getElementById('card-pay-btn');
+    if (payBtn) payBtn.scrollIntoView({ behavior:'smooth', block:'center' });
+    return;
+  }
+  STATE.cardIdx = (STATE.cardIdx || 0) + 1;
+  const html = buildRoastCard(STATE.roastText, STATE.category, STATE.meter, STATE.cardIdx);
+  const cardEl = document.getElementById('cert-modal-card');
+  const actionsEl = document.getElementById('cert-modal-actions');
+  if (cardEl) cardEl.innerHTML = html;
+  if (actionsEl) actionsEl.innerHTML = `
+    <button class="small-action-btn btn-wa" onclick="screenshotCard()">📸 Screenshot & Share</button>
+    <button class="small-action-btn btn-copy" onclick="copyRoastText()">📋 Copy Text</button>
+    <button class="small-action-btn btn-ig" onclick="STATE.cardIdx++;document.getElementById('cert-modal-card').innerHTML=buildRoastCard(STATE.roastText,STATE.category,STATE.meter,STATE.cardIdx)">🎲 New Style</button>
+  `;
+  document.getElementById('cert-modal')?.classList.add('open');
+}
+function closeCertModal() { document.getElementById('cert-modal')?.classList.remove('open'); }
+function screenshotCard() { showToast('📸 Long-press to save → post on Instagram → tag @roastmyrishta to enter the lucky draw! 🎁', 5000); }
 
 /* ══════════════════════════════════════════
    STREAK / GAMIFICATION
@@ -317,7 +350,7 @@ function _updateStreak() {
 function _getShareUrl() {
   /* In production this would be a unique thread ID;
      for now share the base site link */
-  return 'https://roastmyrishta.pages.dev';
+  return 'https://roastmyrishta.byme.workers.dev';
 }
 function _getShareText() {
   return `💀 Just got roasted by RoastMyRishta and I'm NOT okay 🎀\n\n"${STATE.roastText.slice(0, 100)}..."\n\nSend yours and let's see who survives 👀\n${_getShareUrl()}`;
@@ -372,7 +405,7 @@ function _renderTop5() {
 }
 
 function copyTop5SubmitCaption() {
-  const text = `🏆 Submitting our roast for RoastMyRishta's Top 5 Couples this month!\n\nTag @roastmyrishta and use #Top5Roasted to enter 🎀\n\nWinning couples get a surprise gift every month 💗\n\nroastmyrishta.pages.dev`;
+  const text = `🏆 Submitting our roast for RoastMyRishta's Top 5 Couples this month!\n\nTag @roastmyrishta and use #Top5Roasted to enter 🎀\n\nWinning couples get a surprise gift every month 💗\n\nroastmyrishta.byme.workers.dev`;
   navigator.clipboard.writeText(text)
     .then(() => showToast('Caption copied! Tag @roastmyrishta + #Top5Roasted to enter 🏆'));
 }
@@ -425,6 +458,6 @@ document.addEventListener('DOMContentLoaded', () => {
   initFAQ();
   initMarquee();
   _renderTop5();
-  checkSavageUnlock();
+  checkCardUnlock();
   console.log('✅ RR logic.js initialised');
 });
